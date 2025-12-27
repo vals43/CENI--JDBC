@@ -78,7 +78,7 @@ public class Player {
                 ", name='" + name + '\'' +
                 ", age=" + age +
                 ", Position=" + position +
-                ", team=" + team +
+                ", teamName=" + (team != null ? team.getName() : "null") +
                 '}';
     }
 }

@@ -1,5 +1,5 @@
 CREATE TYPE position_enum AS ENUM('GK','DEF','MIDF','STR');
-CREATE TYPE continent_enum AS ENUM('[AFRICA','EUROPA','ASIA','AMERICA');
+CREATE TYPE continent_enum AS ENUM('AFRICA','EUROPA','ASIA','AMERICA');
 CREATE TABLE Team (
     id int PRIMARY KEY,
     name VARCHAR NOT NULL ,

@@ -11,7 +11,7 @@ public class DBConnection {
     private static final Dotenv dotenv = Dotenv.load();
 
     private static final String JDBC_URL = dotenv.get("JDBC_URL");
-    private static final String USERNAME = dotenv.get("USERNAME");
+    private static final String USERNAME = dotenv.get("USER");
     private static final String PASSWORD = dotenv.get("PASSWORD");
 
     public Connection getDBConnection() throws SQLException {
