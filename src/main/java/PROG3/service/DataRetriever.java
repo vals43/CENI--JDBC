@@ -174,4 +174,67 @@ public class DataRetriever {
         }
     }
 
+    public Team saveTeam(Team teamToSave) {
+
+        if (teamToSave == null) {
+            throw new IllegalArgumentException("team null");
+        }
+
+        try (Connection connection = dbConnection.getDBConnection()) {
+
+            connection.setAutoCommit(false);
+
+            String existsQuery = "SELECT COUNT(*) FROM Team WHERE id = ?";
+            String insertQuery = "INSERT INTO Team(id, name, continent) VALUES (?, ?, ?)";
+            String updateQuery = "UPDATE Team SET name = ?, continent = ? WHERE id = ?";
+            String removePlayersTeam = "UPDATE Player SET id_team = NULL WHERE id_team = ?";
+            String updatePlayerTeam = "UPDATE Player SET id_team = ? WHERE id = ?";
+
+            boolean exists;
+
+            try (PreparedStatement stmt = connection.prepareStatement(existsQuery)) {
+                stmt.setInt(1, teamToSave.getId());
+                ResultSet rs = stmt.executeQuery();
+                exists = rs.next() && rs.getInt(1) > 0;
+            }
+
+            if (!exists) {
+                try (PreparedStatement stmt = connection.prepareStatement(insertQuery)) {
+                    stmt.setInt(1, teamToSave.getId());
+                    stmt.setString(2, teamToSave.getName());
+                    stmt.setString(3, teamToSave.getContinent().name());
+                    stmt.executeUpdate();
+                }
+            } else {
+                try (PreparedStatement stmt = connection.prepareStatement(updateQuery)) {
+                    stmt.setString(1, teamToSave.getName());
+                    stmt.setString(2, teamToSave.getContinent().name());
+                    stmt.setInt(3, teamToSave.getId());
+                    stmt.executeUpdate();
+                }
+            }
+
+            try (PreparedStatement stmt = connection.prepareStatement(removePlayersTeam)) {
+                stmt.setInt(1, teamToSave.getId());
+                stmt.executeUpdate();
+            }
+
+            if (teamToSave.getPlayers() != null) {
+                try (PreparedStatement stmt = connection.prepareStatement(updatePlayerTeam)) {
+                    for (Player p : teamToSave.getPlayers()) {
+                        stmt.setInt(1, teamToSave.getId());
+                        stmt.setInt(2, p.getId());
+                        stmt.executeUpdate();
+                    }
+                }
+            }
+
+            connection.commit();
+            return teamToSave;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
 }
