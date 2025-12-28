@@ -132,8 +132,8 @@ public class DataRetriever {
             connection.setAutoCommit(false);
 
             String insertQuery = """
-                INSERT INTO Player(name, age, position, id_team)
-                VALUES (?, ?, ?, ?)
+                INSERT INTO Player(id ,name, age, position, id_team)
+                VALUES (?,?, ?, ?, ?)
                 """;
 
             for (Player p : newPlayers) {
@@ -145,13 +145,14 @@ public class DataRetriever {
 
             try (PreparedStatement stmt = connection.prepareStatement(insertQuery)) {
                 for (Player p : newPlayers) {
-                    stmt.setString(1, p.getName());
-                    stmt.setInt(2, p.getAge());
-                    stmt.setString(3, p.getPosition().name());
+                    stmt.setInt(1, p.getId());
+                    stmt.setString(2, p.getName());
+                    stmt.setInt(3, p.getAge());
+                    stmt.setObject(4, p.getPosition().name(), java.sql.Types.OTHER);
                     if (p.getTeam() != null) {
-                        stmt.setInt(4, p.getTeam().getId());
+                        stmt.setInt(5, p.getTeam().getId());
                     } else {
-                        stmt.setNull(4, java.sql.Types.INTEGER);
+                        stmt.setNull(5, java.sql.Types.INTEGER);
                     }
                     stmt.executeUpdate();
                 }
@@ -290,23 +291,23 @@ public class DataRetriever {
         }
 
         if (position != null) {
-            baseQuery += " AND p.position = ?";
+            baseQuery += " AND p.position = CAST(? AS position_enum)";
             params.add(position.name());
         }
-
         if (teamName != null && !teamName.isBlank()) {
-            baseQuery += " AND LOWER(t.name) LIKE LOWER(?)";
+            baseQuery += " AND t.name ILIKE ?";
             params.add("%" + teamName + "%");
         }
 
+
         if (continent != null) {
-            baseQuery += " AND t.continent = ?";
+            baseQuery += " AND t.continent = CAST(? AS continent_enum)";
             params.add(continent.name());
         }
 
         baseQuery += " LIMIT ? OFFSET ?";
         params.add(size);
-        params.add(page * size);
+        params.add((page - 1) * size);
 
         try (Connection connection = dbConnection.getDBConnection();
              PreparedStatement stmt = connection.prepareStatement(baseQuery)) {

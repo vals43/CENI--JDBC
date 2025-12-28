@@ -58,9 +58,6 @@ public class DataRetriverTest {
 
     @Test
     void f_findPlayersByCriteria() {
-
-
-
         List<Player> players = dataRetriever.findPlayersByCriteria(
                 "ud", PlayerPositionEnum.MIDF, "Madrid", ContinentEnum.EUROPA, 1, 10
         );
