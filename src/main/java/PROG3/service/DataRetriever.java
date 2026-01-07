@@ -186,8 +186,8 @@ public class DataRetriever {
             connection.setAutoCommit(false);
 
             String existsQuery = "SELECT COUNT(*) FROM Team WHERE id = ?";
-            String insertQuery = "INSERT INTO Team(id, name, continent) VALUES (?, ?, ?)";
-            String updateQuery = "UPDATE Team SET name = ?, continent = ? WHERE id = ?";
+            String insertQuery = "INSERT INTO Team(id, name, continent) VALUES (?, ?, ?::continent_enum)";
+            String updateQuery = "UPDATE Team SET name = ?, continent = ?::continent_enum WHERE id = ?";
             String removePlayersTeam = "UPDATE Player SET id_team = NULL WHERE id_team = ?";
             String updatePlayerTeam = "UPDATE Player SET id_team = ? WHERE id = ?";
 
@@ -341,6 +341,7 @@ public class DataRetriever {
 
         return players;
     }
+
 
 
 }

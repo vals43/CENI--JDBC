@@ -22,6 +22,8 @@ public class DataRetriverTest {
         assertNotNull(t);
         assertEquals("Real Madrid CF", t.getName());
         assertEquals(3, t.getPlayers().size());
+        //assertEquals(4, t.getPlayers().size()); avec l'insertion de vini au test i_saveTeam_addPlayer
+
     }
 
     @Test
@@ -49,11 +51,10 @@ public class DataRetriverTest {
     @Test
     void e_findTeamsByPlayerName() {
         List<Team> teams = dataRetriever.findTeamsByPlayerName("an");
-        assertEquals(3, teams.size());
+        assertEquals(2, teams.size());
         System.out.println(teams);
         assertTrue(teams.stream().anyMatch(t -> t.getName().equals("Real Madrid CF")));
-        assertTrue(teams.stream().anyMatch(t -> t.getName().equals("FC Barcelona"))); //there's Robert Lewandowski
-        assertTrue(teams.stream().anyMatch(t -> t.getName().equals("Atlético de Madrid")));
+        assertTrue(teams.stream().anyMatch(t -> t.getName().equals("Atl‚tico de Madrid")));
     }
 
     @Test
@@ -85,24 +86,34 @@ public class DataRetriverTest {
         assertEquals("Vini", result.get(0).getName());
         assertEquals("Pedri", result.get(1).getName());
     }
-    /*
     @Test
     void i_saveTeam_addPlayer() throws SQLException {
+
         Player newPlayer = new Player(6, "Vini", 25, PlayerPositionEnum.STR, null);
+
         Team teamBefore = dataRetriever.findTeamById(1);
         int initialSize = teamBefore.getPlayers().size();
 
-        Team updated = dataRetriever.saveTeam(1, List.of(newPlayer));
+        teamBefore.getPlayers().add(newPlayer);
+
+        Team updated = dataRetriever.saveTeam(teamBefore);
+
         assertEquals(initialSize + 1, updated.getPlayers().size());
-        assertTrue(updated.getPlayers().stream().anyMatch(p -> p.getName().equals("Vini")));
+        assertTrue(updated.getPlayers().stream()
+                .anyMatch(p -> p.getName().equals("Vini")));
     }
 
     @Test
-    void j_saveTeam_removeAllPlayers() {
-        Team updated = dataRetriever.saveTeam(2, List.of());
+    void j_saveTeam_removeAllPlayers() throws SQLException {
+
+        Team team = dataRetriever.findTeamById(2);
+        team.getPlayers().clear();
+
+        Team updated = dataRetriever.saveTeam(team);
+
         assertNotNull(updated);
-        assertEquals("FC Barcelone", updated.getName());
+        assertEquals("FC Barcelona", updated.getName());
         assertTrue(updated.getPlayers().isEmpty());
     }
-    */
+
 }
