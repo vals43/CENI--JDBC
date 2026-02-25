@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SqlDialectMappings">
+    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/3baec1a3-e746-47da-a268-a60bfda2b83c/console.sql" dialect="PostgreSQL" />
+    <file url="file://$PROJECT_DIR$/src/main/java/PROG3/service/DataRetriever.java" dialect="GenericSQL" />
+  </component>
+</project>
