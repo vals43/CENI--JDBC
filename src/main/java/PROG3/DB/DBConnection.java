@@ -14,13 +14,12 @@ public class DBConnection {
     private static final String USERNAME = dotenv.get("USER");
     private static final String PASSWORD = dotenv.get("PASSWORD");
 
-    public Connection getDBConnection() throws SQLException {
-
-        if (JDBC_URL == null || USERNAME == null || PASSWORD == null) {
-            throw new SQLException("Variables JDBC manquantes dans le fichier .env");
+    public Connection getDBConnection() {
+        try {
+            return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
         }
-
-        return DriverManager.getConnection(JDBC_URL, USERNAME, PASSWORD);
     }
 
     public void closeDBConnection() throws SQLException {
